@@ -1,12 +1,16 @@
 package Validator;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import com.joestelmach.natty.*;
 
+import data.ConfigIO;
 import entity.DeadlineTask;
 import entity.FloatingTask;
 import entity.NormalTask;
@@ -30,21 +34,53 @@ public class Validator {
 	private static final int PRIORITY_HIGH = 2;
 	private static final int PRIORITY_DEFAULT = PRIORITY_MEDIUM;
 	
-	public static void main(String[] args) {
+	private static Map<String, String> KEYWORD_MAP = null;
+
+	
+//	FOR TESTING OF KEYWORDS
+	public static void main(String[] agrs) {
+	
+		ConfigIO config = new ConfigIO();
+		KEYWORD_MAP = config.addAllKeywordIntoMap();
 		
 		Scanner sc = new Scanner(System.in);
 		
-		String fullCommand = sc.nextLine();
-		
-		Task task = null;
-		Object obj = parseCommand(fullCommand);
-		
-		if(obj instanceof Task) {
-			task = (Task) obj;
-			System.out.println(task.toString());
+		while(true) {
+			String command = sc.nextLine();
+			
+			System.out.println(validateKeyword(command));
 		}
 		
-		sc.close();
+	}
+
+// 	FOR FULL COMMAND
+//	public static void main(String[] args) {
+//		
+//		Scanner sc = new Scanner(System.in);
+//		
+//		String fullCommand = sc.nextLine();
+//		
+//		Task task = null;
+//		Object obj = parseCommand(fullCommand);
+//		
+//		if(obj instanceof Task) {
+//			task = (Task) obj;
+//			System.out.println(task.toString());
+//		}
+//		
+//		sc.close();
+//	}
+	
+	public static boolean validateKeyword(String keyword) {
+		
+		boolean isKeyword = false;
+		
+		
+		if(KEYWORD_MAP.containsKey(keyword)) {
+			isKeyword = true;
+		} 
+		
+		return isKeyword;
 	}
 
 	private static Object parseCommand(String fullCommand) {
