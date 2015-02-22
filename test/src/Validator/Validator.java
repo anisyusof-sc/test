@@ -1,14 +1,13 @@
 package Validator;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import com.joestelmach.natty.*;
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
 
 import data.ConfigIO;
 import entity.DeadlineTask;
@@ -16,91 +15,76 @@ import entity.FloatingTask;
 import entity.NormalTask;
 import entity.RecurrenceTask;
 import entity.Task;
+import entity.Success;
 
 public class Validator {
 	
 	private static final String KEYWORD_ADD = "add";
 	private static final String KEYWORD_UPDATE = "update";
 	private static final String KEYWORD_DELETE = "delete";
+	private static final String KEYWORD_RETRIEVE = "retrieve";
 	private static final String KEYWORD_BY = "by";
 	private static final String KEYWORD_FROM = "from";
 	private static final String KEYWORD_TO = "to";
 	private static final String KEYWORD_EVERY = "every";
-	private static final String KEYWORD_UNTIL = "until";
 	private static final String KEYWORD_PRIORITY = "priority";
+	private static final String KEYWORD_UNDO = "undo";
+	private static final String KEYWORD_COMPLETE = "complete";
+	private static final String KEYWORD_CLEAR = "clear";
+	private static final String KEYWORD_EXPORT = "export";
 	
 	private static final int PRIORITY_LOW = 0;
 	private static final int PRIORITY_MEDIUM = 1;
 	private static final int PRIORITY_HIGH = 2;
 	private static final int PRIORITY_DEFAULT = PRIORITY_MEDIUM;
 	
-	private static Map<String, String> KEYWORD_MAP = null;
-
+	private Map<String, String> keywordFullMap = null;
 	
-//	FOR TESTING OF KEYWORDS
-	public static void main(String[] agrs) {
-	
-		ConfigIO config = new ConfigIO();
-		KEYWORD_MAP = config.addAllKeywordIntoMap();
+	public Validator() {
 		
-		Scanner sc = new Scanner(System.in);
-		
-		while(true) {
-			String command = sc.nextLine();
-			
-			System.out.println(validateKeyword(command));
-		}
-		
+		loadConfigFile();
 	}
-
-// 	FOR FULL COMMAND
-//	public static void main(String[] args) {
-//		
-//		Scanner sc = new Scanner(System.in);
-//		
-//		String fullCommand = sc.nextLine();
-//		
-//		Task task = null;
-//		Object obj = parseCommand(fullCommand);
-//		
-//		if(obj instanceof Task) {
-//			task = (Task) obj;
-//			System.out.println(task.toString());
-//		}
-//		
-//		sc.close();
-//	}
 	
-	public static boolean validateKeyword(String keyword) {
+	public boolean validateKeyword(String keyword) {
 		
 		boolean isKeyword = false;
 		
-		
-		if(KEYWORD_MAP.containsKey(keyword)) {
+		if(keywordFullMap.containsKey(keyword)) {
 			isKeyword = true;
 		} 
 		
 		return isKeyword;
 	}
-
-	private static Object parseCommand(String fullCommand) {
+	
+	public Object parseCommand(String fullCommand) {
 		
 		Object obj = null;
+//		Engine engineObj = new Engine();
 		
+		fullCommand = fullCommand.toLowerCase();
 		Scanner sc = new Scanner(fullCommand);
+		String commandInput = sc.next();
+		String commandResolved = keywordFullMap.get(commandInput);
 		
-		String command = sc.next();
-		
-		if(command.equalsIgnoreCase(KEYWORD_ADD)) {
-			String remainingCommand = sc.nextLine();
-			obj = parseAddCommand(remainingCommand);
-		
-		} else if(command.equalsIgnoreCase(KEYWORD_UPDATE)) {
-			//obj = parseUpdateCommand() : return Error object (contain isSuccess)
-		
-		} else if(command.equalsIgnoreCase(KEYWORD_DELETE)) {
-			//obj = parseDeleteCommand() : return Error object (contain isSuccess)
-		
+		if(commandResolved != null) {
+			
+			if(commandResolved.equalsIgnoreCase(KEYWORD_ADD)) {
+				
+				String remainingCommand = sc.nextLine();
+				Task task = parseAddCommand(remainingCommand);
+	
+//				Success status = engineObj.insertIntoFile(task);
+				
+				obj = task;
+	
+			} else if(commandResolved.equalsIgnoreCase(KEYWORD_UPDATE)) {
+				//obj = parseUpdateCommand() : return Success object (contain isSuccess)
+			
+			} else if(commandResolved.equalsIgnoreCase(KEYWORD_DELETE)) {
+				//obj = parseDeleteCommand() : return Success object (contain isSuccess)
+			
+			}
+			
 		} else {
 			sc.close();
 			throw new UnsupportedOperationException("Unrecognized command.");
@@ -111,7 +95,7 @@ public class Validator {
 		return obj;
 	}
 	
-	private static Task parseAddCommand(String remainingCommand) {
+	private Task parseAddCommand(String remainingCommand) {
 		
 		Task task = null;
 		Scanner sc = new Scanner(remainingCommand);
@@ -126,41 +110,43 @@ public class Validator {
 		while(sc.hasNext()) {
 			
 			String currentWord = sc.next();
+			String resolvedWord = keywordFullMap.get(currentWord);
 			
-			if(currentWord.equalsIgnoreCase(KEYWORD_FROM)) {
-				
-				isNormalTask = true;
-				
-				String remainingDate = sc.nextLine();
-				task = createNormalTask(taskDesc, remainingDate);
-				
-				break;
-				
-			} else if(currentWord.equalsIgnoreCase(KEYWORD_BY)) {
-				
-				isDeadlineTask = true;
-				
-				String remainingDate = sc.nextLine();
-				task = createDeadlineTask(taskDesc, remainingDate);
-				
-				break;
-				
-			} else if(currentWord.equalsIgnoreCase(KEYWORD_EVERY)) {
-				
-				isRecurrenceTask = true;
-				
-				String remainingDate = sc.nextLine();
-				task = createRecurrenceTask(taskDesc, remainingDate);
-				
-				break;
-				
-			} else if(currentWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
-				
-				isFloatingTask = true;
-				
-				break;
-			}
-				else {
+			if(resolvedWord != null) {
+				if(resolvedWord.equalsIgnoreCase(KEYWORD_FROM)) {
+					
+					isNormalTask = true;
+					
+					String remainingDate = sc.nextLine();
+					task = createNormalTask(taskDesc, remainingDate);
+					
+					break;
+					
+				} else if(resolvedWord.equalsIgnoreCase(KEYWORD_BY)) {
+					
+					isDeadlineTask = true;
+					
+					String remainingDate = sc.nextLine();
+					task = createDeadlineTask(taskDesc, remainingDate);
+					
+					break;
+					
+				} else if(resolvedWord.equalsIgnoreCase(KEYWORD_EVERY)) {
+					
+					isRecurrenceTask = true;
+					
+					String remainingDate = sc.nextLine();
+					task = createRecurrenceTask(taskDesc, remainingDate);
+					
+					break;
+					
+				} else if(resolvedWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
+					
+					isFloatingTask = true;
+					break;
+				}
+					
+			} else {
 				taskDesc += " " + currentWord;
 			}
 		}
@@ -182,7 +168,7 @@ public class Validator {
 		return task;
 	}
 	
-	private static NormalTask createNormalTask(String taskDesc, String remainingDate) {
+	private NormalTask createNormalTask(String taskDesc, String remainingDate) {
 
 		NormalTask task = null;
 		Scanner sc = new Scanner(remainingDate);
@@ -197,24 +183,33 @@ public class Validator {
 		while(sc.hasNext()) {
 			
 			String currentWord = sc.next();
+			String resolvedWord = keywordFullMap.get(currentWord);
 			
 			if(!isEndDate && !isPriority) {
 			
-				if(currentWord.equalsIgnoreCase(KEYWORD_TO)) {
-					isEndDate = true;
+				if(resolvedWord != null) {
+					if(resolvedWord.equalsIgnoreCase(KEYWORD_TO)) {
+						isEndDate = true;
+					} 
 				} else {
 					startDateString += " " + currentWord;
 				}
-			} else if(isEndDate && !isPriority){
+			} else if(isEndDate && !isPriority) {
 				
-				if(currentWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
-					isPriority = true;
+				if(resolvedWord != null) {
+					if(resolvedWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
+						isPriority = true;
+					}
 				} else {
 					endDateString += " " + currentWord;
 				}
 			} else if(isPriority) {
 				try {
-					priority = Integer.parseInt(currentWord);
+					if(resolvedWord != null) {
+						priority = Integer.parseInt(resolvedWord);
+					} else {
+						priority = Integer.parseInt(currentWord);
+					}
 					
 				} catch(NumberFormatException e) {
 					System.err.println("createNormalTask: Cannot parse priority.");
@@ -231,7 +226,7 @@ public class Validator {
 		return task;
 	}
 
-	private static DeadlineTask createDeadlineTask(String taskDesc, String remainingDate) {
+	private DeadlineTask createDeadlineTask(String taskDesc, String remainingDate) {
 		
 		DeadlineTask task = null;
 		Scanner sc = new Scanner(remainingDate);
@@ -244,18 +239,24 @@ public class Validator {
 		while(sc.hasNext()) {
 			
 			String currentWord = sc.next();
+			String resolvedWord = keywordFullMap.get(currentWord);
 			
 			if(!isPriority) {
-				if(currentWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
-					isPriority = true;
-					
+				if(resolvedWord != null) {
+					if(resolvedWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
+						isPriority = true;
+					} 
 				} else {
 					deadlineDateString += " " + currentWord;
 				}
 				
 			} else {
 				try {
-					priority = Integer.parseInt(currentWord);
+					if(resolvedWord != null) {
+						priority = Integer.parseInt(resolvedWord);
+					} else {
+						priority = Integer.parseInt(currentWord);
+					}
 					
 				} catch(NumberFormatException e) {
 					System.err.println("createDeadlineTask: Cannot parse priority.");
@@ -271,7 +272,7 @@ public class Validator {
 		return task;
 	}
 	
-	private static RecurrenceTask createRecurrenceTask(String taskDesc, String remainingDate) {
+	private RecurrenceTask createRecurrenceTask(String taskDesc, String remainingDate) {
 		
 		RecurrenceTask task = null;
 		Scanner sc = new Scanner(remainingDate);
@@ -286,29 +287,39 @@ public class Validator {
 		while(sc.hasNext()) {
 			
 			String currentWord = sc.next();
+			String resolvedWord = keywordFullMap.get(currentWord);
 			
 			if(!isEndRecurrenceDate && !isPriority) {
-				if(currentWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
-					isPriority = true;
-					
-				} else if(currentWord.equalsIgnoreCase(KEYWORD_TO)) {
-					isEndRecurrenceDate = true;
-					
+				
+				if(resolvedWord != null) {
+					if(resolvedWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
+						isPriority = true;
+						
+					} else if(resolvedWord.equalsIgnoreCase(KEYWORD_TO)) {
+						isEndRecurrenceDate = true;
+						
+					} 
 				} else {
 					startRecurrenceDateString += " " + currentWord;
 				}
 				
 			} else if(isEndRecurrenceDate && !isPriority) {
-				if(currentWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
-					isPriority = true;
-					
+				
+				if(resolvedWord != null) {
+					if(resolvedWord.equalsIgnoreCase(KEYWORD_PRIORITY)) {
+						isPriority = true;
+					} 
 				} else {
 					endRecurrenceDateString += " " + currentWord;
 				}
 				
 			} else if(isPriority) {
 				try {
-					priority = Integer.parseInt(currentWord);
+					if(resolvedWord != null) {
+						priority = Integer.parseInt(resolvedWord);
+					} else {
+						priority = Integer.parseInt(currentWord);
+					}
 					
 				} catch(NumberFormatException e) {
 					System.err.println("createRecurrenceTask: Cannot parse priority.");
@@ -324,8 +335,8 @@ public class Validator {
 		sc.close();
 		return task;
 	}
-
-	private static FloatingTask createFloatingTask(String taskDesc, String remainingPriority) {
+	
+	private FloatingTask createFloatingTask(String taskDesc, String remainingPriority) {
 		
 		FloatingTask task = null;
 		
@@ -336,9 +347,14 @@ public class Validator {
 			Scanner sc = new Scanner(remainingPriority);
 			
 			String currentWord = sc.next();
+			String resolvedWord = keywordFullMap.get(currentWord);
 			
 			try {
-				priority = Integer.parseInt(currentWord);
+				if(resolvedWord != null) {
+					priority = Integer.parseInt(resolvedWord);
+				} else {
+					priority = Integer.parseInt(currentWord);
+				}
 				
 			} catch(NumberFormatException e) {
 				System.err.println("createFloatingTask: Cannot parse priority.");
@@ -350,6 +366,12 @@ public class Validator {
 		task = new FloatingTask(taskDesc, priority);
 		
 		return task;
+	}
+	
+	private void loadConfigFile() {
+		
+		ConfigIO config = new ConfigIO();
+		keywordFullMap = config.getFullKeywordMap();
 	}
 	
 	private static Date parseStringToDate(String dateInfo) {
