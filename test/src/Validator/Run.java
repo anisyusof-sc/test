@@ -9,42 +9,42 @@ import entity.*;
 public class Run {
 
 //	FOR TESTING OF COMPARATOR
-	public static void main(String[] args) throws ParseException {
-		
-		SimpleDateFormat sdf = new SimpleDateFormat ("dd-MM-yyyy");
-		
-		List<Task> taskList = new ArrayList<Task>();
-		
-		NormalTask NormalS = new NormalTask("NormalS", 0, sdf.parse("23-02-2015"), sdf.parse("24-02-2015"));
-		NormalTask NormalA = new NormalTask("NormalA", 0, sdf.parse("24-02-2015"), null);
-	
-		DeadlineTask DeadlineF = new DeadlineTask("DeadlineF", 0, sdf.parse("27-02-2015"));
-		DeadlineTask DeadlineC = new DeadlineTask("DeadlineC", 0, sdf.parse("28-02-2015"));
-	
-		RecurrenceTask RecurZ = new RecurrenceTask("RecurZ", 0, sdf.parse("28-02-2015"), null);
-		RecurrenceTask RecurL = new RecurrenceTask("RecurL", 0, sdf.parse("01-03-2015"), sdf.parse("01-03-2015"));
-		
-		FloatingTask FloatX = new FloatingTask("FloatX", 0);
-		FloatingTask FloatH = new FloatingTask("FloatH", 0);
-		
-		taskList.add(DeadlineC);
-		taskList.add(NormalA);
-		taskList.add(FloatX);
-		taskList.add(RecurZ);
-		taskList.add(FloatH);
-		taskList.add(NormalS);
-		taskList.add(RecurL);
-		taskList.add(DeadlineF);
-		
-		Collections.sort(taskList, Task.taskComparator);
-		
-		for(int i = 1; i-1 < taskList.size(); i++) {
-			//System.out.println(i + ". " + taskList.get(i-1));
-			System.out.println(i + ". " + taskList.get(i-1).getTaskName());
-		}
-		
-		System.out.println(RecurZ.equals(RecurL));
-	}
+//	public static void main(String[] args) throws ParseException {
+//		
+//		SimpleDateFormat sdf = new SimpleDateFormat ("dd-MM-yyyy");
+//		
+//		List<Task> taskList = new ArrayList<Task>();
+//		
+//		NormalTask NormalS = new NormalTask("NormalS", 0, sdf.parse("23-02-2015"), sdf.parse("24-02-2015"));
+//		NormalTask NormalA = new NormalTask("NormalA", 0, sdf.parse("24-02-2015"), null);
+//	
+//		DeadlineTask DeadlineF = new DeadlineTask("DeadlineF", 0, sdf.parse("27-02-2015"));
+//		DeadlineTask DeadlineC = new DeadlineTask("DeadlineC", 0, sdf.parse("28-02-2015"));
+//	
+//		RecurrenceTask RecurZ = new RecurrenceTask("RecurZ", 0, sdf.parse("28-02-2015"), null);
+//		RecurrenceTask RecurL = new RecurrenceTask("RecurL", 0, sdf.parse("01-03-2015"), sdf.parse("01-03-2015"));
+//		
+//		FloatingTask FloatX = new FloatingTask("FloatX", 0);
+//		FloatingTask FloatH = new FloatingTask("FloatH", 0);
+//		
+//		taskList.add(DeadlineC);
+//		taskList.add(NormalA);
+//		taskList.add(FloatX);
+//		taskList.add(RecurZ);
+//		taskList.add(FloatH);
+//		taskList.add(NormalS);
+//		taskList.add(RecurL);
+//		taskList.add(DeadlineF);
+//		
+//		Collections.sort(taskList, Task.taskComparator);
+//		
+//		for(int i = 1; i-1 < taskList.size(); i++) {
+//			//System.out.println(i + ". " + taskList.get(i-1));
+//			System.out.println(i + ". " + taskList.get(i-1).getTaskName());
+//		}
+//		
+//		System.out.println(RecurZ.equals(RecurL));
+//	}
 	
 //	FOR VALIDATING KEYWORDS
 //	public static void main(String[] args) {
@@ -59,24 +59,24 @@ public class Run {
 //	}
 	
 // 	FOR FULL COMMAND
-//	public static void main(String[] args) {
-// 		
-//		Validator v = new Validator();
-// 		
-//		
-//		Scanner sc = new Scanner(System.in);
-//		
-//		while(true) {
-//			String fullCommand = sc.nextLine();
-//			
-//			Task task = null;
-//			Object obj = v.parseCommand(fullCommand);
-//			
-//			if(obj instanceof Task) {
-//				task = (Task) obj;
-//				System.out.println(task.toString());
-//			}
-//		}
-//	}
+	public static void main(String[] args) {
+ 		
+		Validator v = new Validator();
+ 		
+		
+		Scanner sc = new Scanner(System.in);
+		
+		while(true) {
+			String fullCommand = sc.nextLine();
+			
+			Task task = null;
+			Object obj = v.parseCommand(fullCommand);
+			
+			if(obj instanceof Task) {
+				task = (Task) obj;
+				System.out.println(task.toString());
+			}
+		}
+	}
 
 }
