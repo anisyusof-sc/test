@@ -7,6 +7,27 @@ import java.util.*;
 import entity.*;
 
 public class Run {
+	
+//	FOR TESTING OF VALIDATING KEYWORD
+	public static void main(String[] ags) {
+		
+		Scanner sc = new Scanner(System.in);
+		KeywordStructure ks = new KeywordStructure();
+		
+		while(true) {
+			String keywords = sc.nextLine();
+			
+			Scanner scn = new Scanner(keywords);
+			
+			List<String> stringList = new ArrayList<String>();
+			
+			while(scn.hasNext()) {
+				stringList.add(scn.next());
+			}
+			
+			System.out.println("keyword : " + ks.checkKeyword(stringList));
+		}
+	}
 
 //	FOR TESTING OF COMPARATOR
 //	public static void main(String[] args) throws ParseException {
@@ -59,24 +80,24 @@ public class Run {
 //	}
 	
 // 	FOR FULL COMMAND
-	public static void main(String[] args) {
- 		
-		Validator v = new Validator();
- 		
-		
-		Scanner sc = new Scanner(System.in);
-		
-		while(true) {
-			String fullCommand = sc.nextLine();
-			
-			Task task = null;
-			Object obj = v.parseCommand(fullCommand);
-			
-			if(obj instanceof Task) {
-				task = (Task) obj;
-				System.out.println(task.toString());
-			}
-		}
-	}
+//	public static void main(String[] args) {
+// 		
+//		Validator v = new Validator();
+// 		
+//		
+//		Scanner sc = new Scanner(System.in);
+//		
+//		while(true) {
+//			String fullCommand = sc.nextLine();
+//			
+//			Task task = null;
+//			Object obj = v.parseCommand(fullCommand);
+//			
+//			if(obj instanceof Task) {
+//				task = (Task) obj;
+//				System.out.println(task.toString());
+//			}
+//		}
+//	}
 
 }
