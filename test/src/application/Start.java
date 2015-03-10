@@ -1,33 +1,34 @@
-package Validator;
+package application;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import logic.KeywordStructure;
 import entity.*;
 
-public class Run {
+public class Start {
 	
 //	FOR TESTING OF VALIDATING KEYWORD
-	public static void main(String[] ags) {
-		
-		Scanner sc = new Scanner(System.in);
-		KeywordStructure ks = new KeywordStructure();
-		
-		while(true) {
-			String keywords = sc.nextLine();
-			
-			Scanner scn = new Scanner(keywords);
-			
-			List<String> stringList = new ArrayList<String>();
-			
-			while(scn.hasNext()) {
-				stringList.add(scn.next());
-			}
-			
-			System.out.println("keyword : " + ks.checkKeyword(stringList));
-		}
-	}
+//	public static void main(String[] ags) {
+//		
+//		Scanner sc = new Scanner(System.in);
+//		KeywordStructure ks = new KeywordStructure();
+//		
+//		while(true) {
+//			String keywords = sc.nextLine();
+//			
+//			Scanner scn = new Scanner(keywords);
+//			
+//			List<String> stringList = new ArrayList<String>();
+//			
+//			while(scn.hasNext()) {
+//				stringList.add(scn.next());
+//			}
+//			
+//			System.out.println("keyword : " + ks.checkKeyword(stringList));
+//		}
+//	}
 
 //	FOR TESTING OF COMPARATOR
 //	public static void main(String[] args) throws ParseException {
